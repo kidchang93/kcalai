@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:kcalai/buttons/login_button.dart';
+import 'package:kcalai/widgets/login_button.dart';
+import 'package:kcalai/widgets/start_button.dart';
 import 'package:kcalai/styles/style.dart';
 
 class HomeScreen extends StatelessWidget{
@@ -24,9 +25,13 @@ class HomeScreen extends StatelessWidget{
                   padding: const EdgeInsets.all(32.0),
                   child: Text("음식 사진 만으로 칼로리 측정", style: AppTextStyles.body),
                 ),
+                // Padding(
+                //   padding: const EdgeInsets.all(32.0),
+                //   child: LoginButton(), // 버튼 위젯 주입
+                // ),
                 Padding(
                   padding: const EdgeInsets.all(32.0),
-                  child: LoginButton(), // 버튼 위젯 주입
+                  child: StartButton(), // 버튼 위젯 주입
                 ),
               ],
             )
