@@ -16,8 +16,13 @@ class HomeScreen extends StatelessWidget{
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center, // 👈 가운데 정렬
               children: [
-                Padding(padding: const EdgeInsets.all(32.0),
-                  child: Text("홈화면", style: AppTextStyles.title),
+                Padding(
+                  padding: const EdgeInsets.all(32.0),
+                  child: Text("K-Cal AI", style: AppTextStyles.title),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(32.0),
+                  child: Text("음식 사진 만으로 칼로리 측정", style: AppTextStyles.body),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(32.0),

@@ -5,7 +5,7 @@ class AppTextStyles {
   static const title = TextStyle(
     fontSize: 32,
     fontWeight: FontWeight.bold,
-    color: Colors.blue,
+    color: Color(0xFF000000),
   );
 
   static const body = TextStyle(
