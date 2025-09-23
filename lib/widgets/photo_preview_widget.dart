@@ -22,13 +22,18 @@ class PhotoPreviewWidget extends StatelessWidget{
           Padding(padding: const EdgeInsets.all(16.0),
           child: ElevatedButton(onPressed: () async {
             try {
-              final result = await ApiService.uploadPhoto(File(imageFile.path));
+              // 1. 업로드 성공 여부만 SnackBar 로 보여주기
+              final predictions = await ApiService.uploadPhoto(File(imageFile.path));
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(result.toString())),
+                SnackBar(content: Text("업로드 및 예측 완료")),
               );
+
+              // 2. 예측 결과창 이동
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const ResultScreen())
+                MaterialPageRoute(
+                    builder: (context) => ResultScreen(predictions: predictions),
+                )
               ); // 촬영 화면으로 돌아가기
             } catch (e) {
               ScaffoldMessenger.of(context).showSnackBar(
