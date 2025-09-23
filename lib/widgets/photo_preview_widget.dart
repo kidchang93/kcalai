@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:kcalai/screen/result_screen.dart';
 import 'package:kcalai/services/api_service.dart';
 
 class PhotoPreviewWidget extends StatelessWidget{
@@ -23,9 +24,12 @@ class PhotoPreviewWidget extends StatelessWidget{
             try {
               final result = await ApiService.uploadPhoto(File(imageFile.path));
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(result)),
+                SnackBar(content: Text(result.toString())),
               );
-              Navigator.pop(context); // 촬영 화면으로 돌아가기
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ResultScreen())
+              ); // 촬영 화면으로 돌아가기
             } catch (e) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text(e.toString())),
