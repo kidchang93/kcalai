@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:kcalai/home.dart';
 import 'package:kcalai/models/prediction.dart';
 import 'package:kcalai/screen/main_screen.dart';
 
@@ -16,7 +17,7 @@ class _ResultWidgetState extends State<ResultWidget> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Expanded(
+        Flexible(
           child: ListView(
           children: widget.predictions.map((p) {
             return ListTile(
@@ -26,7 +27,7 @@ class _ResultWidgetState extends State<ResultWidget> {
           }).toList(),
         ),
         ),
-        Padding(padding: const EdgeInsets.all(64.0),
+        Padding(padding: const EdgeInsets.all(0.0),
         child: ElevatedButton(onPressed: () {
           // 다시 촬영 화면으로 이동
           Navigator.push(
@@ -38,6 +39,15 @@ class _ResultWidgetState extends State<ResultWidget> {
           child: const Text("다시 촬영"),
         ),
         ),
+        Padding(padding: const EdgeInsets.all(32.0),
+        child: ElevatedButton(onPressed: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const HomeScreen())
+          );
+          }, child: const Text("홈으로 나가기"),
+        )
+        )
       ],
     );
   }

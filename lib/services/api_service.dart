@@ -8,7 +8,8 @@ import 'package:path/path.dart';
 
 
 class ApiService{
-  static const baseUrl = "http://10.0.2.2:8000/predict";  // 에뮬레이터의 경우 이게 로컬 주소
+  // static const baseUrl = "http://10.0.2.2:8000/predict";  // 에뮬레이터의 경우 이게 로컬 주소
+  static const baseUrl = "http://175.45.194.221:8000/predict";
 
   static Future<List<Prediction>> uploadPhoto(File imageFile) async {
     final uri = Uri.parse(baseUrl);
