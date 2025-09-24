@@ -14,37 +14,49 @@ class PhotoPreviewWidget extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("사진 미리보기")),
-      body: Column(
-        children: [
-          Expanded(child: Image.file(File(imageFile.path)),
-          ),
-          Padding(padding: const EdgeInsets.all(16.0),
-          child: ElevatedButton(onPressed: () async {
-            try {
-              // 1. 업로드 성공 여부만 SnackBar 로 보여주기
-              final predictions = await ApiService.uploadPhoto(File(imageFile.path));
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text("업로드 및 예측 완료")),
-              );
+      body: SafeArea(
+        child: Stack(
+          children: [
+            // 1. 화면 전체에 사진 표시, 원본 해상도 유지
+            Center(
+              child: Image.file(
+                File(imageFile.path),
+                // fit을 없애면 원본 해상도로 표시됨
+                // fit: BoxFit.none,
+              ),
+            ),
 
-              // 2. 예측 결과창 이동
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => ResultScreen(predictions: predictions),
-                )
-              ); // 촬영 화면으로 돌아가기
-            } catch (e) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(e.toString())),
-              );
-            }
-          },
-            child: const Text("서버 전송"),
-          ),
-          ),
-        ],
+            // 2. 버튼은 사진 위에 겹치게
+            Positioned(
+              bottom: 64,
+              left: 128,
+              right: 128,
+              child: ElevatedButton(
+                onPressed: () async {
+                  try {
+                    final predictions =
+                    await ApiService.uploadPhoto(File(imageFile.path));
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("업로드 및 예측 완료")),
+                    );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            ResultScreen(predictions: predictions),
+                      ),
+                    );
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(e.toString())),
+                    );
+                  }
+                },
+                child: const Text("서버 전송"),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

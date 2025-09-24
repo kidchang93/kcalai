@@ -39,7 +39,7 @@ class _ResultWidgetState extends State<ResultWidget> {
           child: const Text("다시 촬영"),
         ),
         ),
-        Padding(padding: const EdgeInsets.all(32.0),
+        Padding(padding: const EdgeInsets.all(64.0),
         child: ElevatedButton(onPressed: () {
           Navigator.push(
               context,
