@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'home.dart';
 
-void main() {
+Future<void> main() async {
   // 환경변수 파일 설정
-  // const env = String.fromEnvironment('ENV', defaultValue: 'dev'); // 기본 dev
-  // await dotenv.load(fileName: '.env.de.$env');
-  //
+  const env = String.fromEnvironment('ENV', defaultValue: 'dev');
+  await dotenv.load(fileName: env == 'prod' ? ".env.prod" : ".env.dev");
+
   runApp(const MyApp());
 }
 
