@@ -6,8 +6,8 @@ class Prediction {
 
   factory Prediction.fromJson(Map<String, dynamic> json){
     return Prediction(
-    label: json['label'] as String,
-    score: (json['score'] as num).toDouble(),
+      label: json['label'] as String,
+      score: (json['score'] as num).toDouble(),
     );
   }
 }
