@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:kcalai/models/prediction.dart';
 import 'package:path/path.dart';
@@ -9,10 +10,11 @@ import 'package:path/path.dart';
 
 class ApiService{
   // static const baseUrl = "http://10.0.2.2:8000/predict";  // 에뮬레이터의 경우 이게 로컬 주소
-  static const baseUrl = "http://175.45.194.221:8000/predict";
+  // static const baseUrl = "http://175.45.194.221:8000/api/predict";
+  static final baseUrl = dotenv.env['API_URL'];
 
   static Future<List<Prediction>> uploadPhoto(File imageFile) async {
-    final uri = Uri.parse(baseUrl);
+    final uri = Uri.parse("$baseUrl/api/predict");
     var request = http.MultipartRequest('POST', uri);
 
     request.files.add(
@@ -36,7 +38,8 @@ class ApiService{
         .map((e) => Prediction.fromJson(e as Map<String, dynamic>))
           .toList();
     } else {
-      throw Exception('업로드 실패: ${response.statusCode}');    }
+      throw Exception('업로드 실패: ${response.statusCode}');
+    }
   }
 
   // static Future<String> predictResult() async {
