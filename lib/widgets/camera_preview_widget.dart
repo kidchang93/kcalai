@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kcalai/widgets/photo_preview_widget.dart';
+import 'package:path_provider/path_provider.dart';
 
 class CameraPreviewWidget extends StatefulWidget{
   const CameraPreviewWidget({super.key});
@@ -24,7 +27,8 @@ class _CameraPreviewWidget extends State<CameraPreviewWidget>{
   Future<void> initCamera() async {
     cameras = await availableCameras();
     if(cameras.isNotEmpty) {
-      controller = CameraController(cameras[0], ResolutionPreset.medium);
+      controller = CameraController(cameras[0], ResolutionPreset.max,
+      imageFormatGroup: ImageFormatGroup.jpeg, enableAudio: false);
       await controller!.initialize();
       setState(() {
         isCameraReady = true;

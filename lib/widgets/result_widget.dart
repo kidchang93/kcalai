@@ -41,6 +41,7 @@ class _ResultWidgetState extends State<ResultWidget> {
         ),
         Padding(padding: const EdgeInsets.all(64.0),
         child: ElevatedButton(onPressed: () {
+
           Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => const HomeScreen())

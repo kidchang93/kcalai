@@ -6,27 +6,24 @@ import 'package:flutter/material.dart';
 import 'package:kcalai/screen/result_screen.dart';
 import 'package:kcalai/services/api_service.dart';
 
-class PhotoPreviewWidget extends StatelessWidget{
+class PhotoPreviewWidget extends StatefulWidget {
   final XFile imageFile;
   const PhotoPreviewWidget({super.key, required this.imageFile});
-  
 
+  @override
+  State<PhotoPreviewWidget> createState() => _PhotoPreviewWidgetState();
+}
+
+class _PhotoPreviewWidgetState extends State<PhotoPreviewWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: Stack(
           children: [
-            // 1. 화면 전체에 사진 표시, 원본 해상도 유지
             Center(
-              child: Image.file(
-                File(imageFile.path),
-                // fit을 없애면 원본 해상도로 표시됨
-                // fit: BoxFit.none,
-              ),
+              child: Image.file(File(widget.imageFile.path)),
             ),
-
-            // 2. 버튼은 사진 위에 겹치게
             Positioned(
               bottom: 64,
               left: 128,
@@ -34,11 +31,16 @@ class PhotoPreviewWidget extends StatelessWidget{
               child: ElevatedButton(
                 onPressed: () async {
                   try {
-                    final predictions =
-                    await ApiService.uploadPhoto(File(imageFile.path));
+                    final predictions = await ApiService.uploadPhoto(
+                      File(widget.imageFile.path),
+                    );
+
+                    if (!mounted) return; // ✅ context 안전성 보장
+
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text("업로드 및 예측 완료")),
                     );
+
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -47,6 +49,7 @@ class PhotoPreviewWidget extends StatelessWidget{
                       ),
                     );
                   } catch (e) {
+                    if (!mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text(e.toString())),
                     );
