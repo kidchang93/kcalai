@@ -60,11 +60,16 @@ class CameraUtils with ChangeNotifier {
       final imgPath = '${directory.path}/${DateTime.now()}.jpeg';
       // 사진 촬영
       final XFile imageFile = await controller!.takePicture();
+      final aspectRatio = controller.value.aspectRatio;
       await imageFile.saveTo(imgPath);
       if (context.mounted) {
         Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => PhotoPreview(imageFile: imageFile),
+        MaterialPageRoute(
+          builder: (context) => PhotoPreview(
+              imageFile: imageFile,
+              aspectRatio: aspectRatio
+          ),
         ),
       );
       }

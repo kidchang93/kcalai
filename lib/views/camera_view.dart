@@ -13,68 +13,88 @@ class CameraView extends StatefulWidget {
 class _CameraViewState extends State<CameraView> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          context.watch<CameraUtils>().isLoaded
-              ? Positioned.fill(
-                child: CameraPreview(
-                    context.watch<CameraUtils>().controller
-                ),
-          )
-          : const Center(
-              child : CircularProgressIndicator()
-          ),
-          SafeArea(
-              child: Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 16, 0, 0),
-              child: Align(
-                alignment: Alignment.topCenter,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    // 플래쉬 토글 버튼
-                    IconButton(onPressed: () {
-                      context.read<CameraUtils>().toggleFlash();
-                    }, icon: Icon(
-                        context.read<CameraUtils>().isFlashOn ? Icons.flash_on_outlined : Icons.flash_off_outlined,
-                    size: 24,
-                    color: Colors.black,
-                    ),
-                    ),
+    final cameraUtils = context.watch<CameraUtils>();
 
-                    // 닫기 버튼
-                    IconButton(onPressed: () {
-                      Navigator.pop(context);
-                    }, icon: const Icon(
-                      Icons.close,
-                      size: 24,
-                      color: Colors.black,
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: SafeArea(
+        child: Column(
+          children: [
+            // 상단 영역 ( 플래쉬 + 닫기 버튼 )
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // 뒤로 가기 버튼
+                  IconButton(onPressed: () {
+                    Navigator.pop(context);
+                  }, icon: const Icon(
+                    Icons.arrow_back_ios,
+                    size: 28,
+                    color: Colors.white,
+                  ),
+                  ),
+
+                  // 플래쉬 토글 버튼
+                  IconButton(
+                    onPressed: () => context.read<CameraUtils>().toggleFlash(),
+                    icon: Icon(
+                    cameraUtils.isFlashOn ? Icons.flash_on_outlined : Icons.flash_off_outlined,
+                    size: 28,
+                    color: Colors.white,
+                  ),
+                  ),
+
+                  // 전면/후면 카메라 전환
+                  IconButton(
+                    onPressed: () => context.read<CameraUtils>().changeCameraDirection(),
+                    icon: const Icon(
+                      Icons.cameraswitch,
+                      size: 28,
+                      color: Colors.white,
                     ),
-                    ),
-                  ],
-                )
+                  ),
+
+                  // // 그리드/가이드라인 토글 (예시)
+                  // IconButton(
+                  //   onPressed: () {
+                  //     // TODO: grid toggle 기능 추가
+                  //   },
+                  //   icon: const Icon(
+                  //     Icons.grid_on,
+                  //     size: 28,
+                  //     color: Colors.white,
+                  //   ),
+                  // ),
+                ],
               ),
-              )
           ),
-          SafeArea(child: Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              padding: const EdgeInsets.only(bottom: 64),
+            // 카메라 프리뷰 (중앙, 남은 공간 전체 사용)
+            Expanded(
+              child: cameraUtils.isLoaded ? ClipRRect(
+                // borderRadius: BorderRadius.circular(12),
+                // child: AspectRatio(aspectRatio: cameraUtils.controller.value.aspectRatio,
+                // child: CameraPreview(cameraUtils.controller),
+                // ),
+                child: CameraPreview(cameraUtils.controller),
+              )
+              : const Center(child: CircularProgressIndicator(),)
+            ),
+            // 하단 영역
+            Padding(
+                padding: const EdgeInsets.only(bottom:32, top: 16),
               child: GestureDetector(
-                onTap: () {
-                  // 사진 촬영 함수 호출
-                  context.read<CameraUtils>().takePicture(context);
-                },
+                onTap: () => cameraUtils.takePicture(context),
                 child: Icon(
                   Icons.circle,
-                  size: 64,
-                  color: context.read<CameraUtils>().canTakePicture ? Colors.white : Colors.grey,
+                  size: 72,
+                  color: cameraUtils.canTakePicture ? Colors.white : Colors.grey
                 ),
               ),
-            ),
-          ))
-        ],
+            )
+          ],
+        ),
       ),
     );
   }
