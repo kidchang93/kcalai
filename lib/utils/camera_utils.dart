@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:kcalai/views/photo_preview.dart';
 import 'package:path_provider/path_provider.dart';
 
 class CameraUtils with ChangeNotifier {
@@ -58,9 +59,15 @@ class CameraUtils with ChangeNotifier {
       Directory directory = await getTemporaryDirectory();
       final imgPath = '${directory.path}/${DateTime.now()}.jpeg';
       // 사진 촬영
-      final XFile file = await controller!.takePicture();
-      await file.saveTo(imgPath);
-      if (context.mounted) Navigator.pop(context, imgPath);
+      final XFile imageFile = await controller!.takePicture();
+      await imageFile.saveTo(imgPath);
+      if (context.mounted) {
+        Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => PhotoPreview(imageFile: imageFile),
+        ),
+      );
+      }
     } catch (e){
       debugPrint('사진 촬영 오류');
     }
