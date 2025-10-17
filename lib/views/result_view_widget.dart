@@ -1,8 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kcalai/home.dart';
 import 'package:kcalai/models/prediction.dart';
 import 'package:kcalai/screen/main_screen.dart';
+import 'package:kcalai/styles/style.dart';
 
 class ResultWidget extends StatefulWidget {
   final List<Prediction> predictions;
@@ -15,40 +15,61 @@ class ResultWidget extends StatefulWidget {
 class _ResultWidgetState extends State<ResultWidget> {
   @override
   Widget build(BuildContext context) {
+    final topPrediction = widget.predictions.reduce((a,b) => a.score > b.score ? a : b);
     return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,  // 위-중앙-아래 구조 배치
       children: [
         Flexible(
           child: ListView(
+          shrinkWrap: true,
           children: widget.predictions.map((p) {
             return ListTile(
-              title: Text(p.label),
-              trailing: Text((p.score * 100).toStringAsFixed(2) + '%'),
+              title: Text(p.label, style: AppTextStyles.title,),
+              trailing: Text((p.score * 100).toStringAsFixed(2) + '%', style: AppTextStyles.title,),
             );
           }).toList(),
         ),
         ),
-        Padding(padding: const EdgeInsets.all(0.0),
-        child: ElevatedButton(onPressed: () {
-          // 다시 촬영 화면으로 이동
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const MainScreen(),
-            )
-          );
-        }, 
-          child: const Text("다시 촬영"),
-        ),
-        ),
-        Padding(padding: const EdgeInsets.all(64.0),
-        child: ElevatedButton(onPressed: () {
 
-          Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const HomeScreen())
-          );
-          }, child: const Text("홈으로 나가기"),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          child: Text(
+              "해당 음식은 ${(topPrediction.score * 100).toStringAsFixed(2) + '%'}로 ${topPrediction.label}(으)로 보여집니다.\n"
+              "${topPrediction.label}의 칼로리와 영양 정보를\n"
+              "알려 드릴까요?",
+            style: AppTextStyles.body,
+            textAlign: TextAlign.center,
+          ),
+        ),
+        Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: ElevatedButton(onPressed: () {
+                // 다시 촬영 화면으로 이동
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const MainScreen(),
+                    )
+                );
+              },
+                child: const Text("다시 촬영"),
+              ),
+            ),
+            Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: ElevatedButton(onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const HomeScreen())
+                  );
+                },
+                  child: const Text("홈으로 나가기"),
+                )
+            )
+          ],
         )
-        )
+
       ],
     );
   }
