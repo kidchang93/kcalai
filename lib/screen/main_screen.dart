@@ -1,8 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kcalai/utils/camera_utils.dart';
-import 'package:kcalai/views/camera_view.dart';
-import 'package:kcalai/widgets/camera_preview_widget.dart';
+import 'package:kcalai/views/camera_view_widget.dart';
 import 'package:provider/provider.dart';
 
 class MainScreen extends StatelessWidget{

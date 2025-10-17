@@ -1,7 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:kcalai/widgets/login_button.dart';
-import 'package:kcalai/widgets/start_button.dart';
+import 'package:kcalai/buttons/start_button.dart';
 import 'package:kcalai/styles/style.dart';
 
 class HomeScreen extends StatelessWidget{

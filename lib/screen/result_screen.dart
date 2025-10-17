@@ -1,7 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kcalai/models/prediction.dart';
-import 'package:kcalai/widgets/result_widget.dart';
+import 'package:kcalai/views/result_view_widget.dart';
 
 class ResultScreen extends StatelessWidget {
   final List<Prediction> predictions; // 서버에서 받은 예측 결과
