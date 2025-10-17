@@ -53,7 +53,7 @@ class _ResultWidgetState extends State<ResultWidget> {
                         model: ButtonModel(
                           text: "네",
                           textColor: Colors.white,
-                          backgroundColor: Colors.green,
+                          backgroundColor: Color(0xFF9A93DA),
                           borderRadius: 12,
                           onPressed: () {
                             // 버튼 클릭 시 행동
