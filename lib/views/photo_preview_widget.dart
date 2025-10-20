@@ -2,8 +2,11 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:kcalai/buttons/custom_button.dart';
+import 'package:kcalai/models/button_model.dart';
 import 'package:kcalai/screen/result_screen.dart';
 import 'package:kcalai/services/api_service.dart';
+import 'package:kcalai/services/send_to_api_service.dart';
 import 'package:kcalai/styles/style.dart';
 import 'package:photo_view/photo_view.dart';
 
@@ -73,42 +76,22 @@ class _PhotoPreviewState extends State<PhotoPreview> {
             // 하단 영역
             Padding(
               padding: const EdgeInsets.only(bottom:32, top: 16),
-              child: Column(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  TextButton(onPressed: () async {
-                    try {
-                      
-                      final predictions = await ApiService.uploadPhoto(
-                        File(widget.imageFile.path),
-                      );
-
-                      if (!mounted) return; // ✅ context 안전성 보장
-
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              ResultScreen(predictions: predictions),
-                        ),
-                      );
-                    } catch (e) {
-                      if (!mounted) return;
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(e.toString())),
-                      );
-                    }
-                    },
-                      style: TextButton.styleFrom(
-                        side: const BorderSide(color: Colors.white, width: 2),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12) //  둥근 모서리
-                        ),
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                        backgroundColor: Colors.white,
-                      ),
-                      child: Text('서버 전송', style: AppTextStyles.blackText),
-                  ),
+                  CustomButton(
+                      model: ButtonModel(
+                        text: "서버 전송",
+                        textColor: Colors.white,
+                        backgroundColor: Color(0xFF9A93DA),
+                        borderRadius: 12,
+                        onPressed: () {
+                          SendToAPIService.sendPhotoToAPI(context, widget.imageFile);
+                        },
+                        icon: Icons.send,
+                        isExpanded: false, // 필요하면 true
+                      )
+                  )
                 ],
               )
             )

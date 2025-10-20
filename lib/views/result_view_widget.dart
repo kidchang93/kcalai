@@ -59,7 +59,7 @@ class _ResultWidgetState extends State<ResultWidget> {
                             // 버튼 클릭 시 행동
                             print("영양 정보 보기 버튼 클릭");
                           },
-                          icon: Icons.info_outline,
+                          icon: Icons.search,
                           isExpanded: false, // 필요하면 true
                         ),
                     ),
@@ -74,28 +74,45 @@ class _ResultWidgetState extends State<ResultWidget> {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: ElevatedButton(onPressed: () {
-                // 다시 촬영 화면으로 이동
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const MainScreen(),
-                    )
-                );
-              },
-                child: const Text("다시 촬영"),
+              child: CustomButton(
+                model: ButtonModel(
+                  text: "다시 촬영",
+                  textColor: Colors.white,
+                  backgroundColor: Color(0xFF9A93DA),
+                  borderRadius: 12,
+                  onPressed: () {
+                    // 다시 촬영 화면으로 이동
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const MainScreen(),
+                        )
+                    );
+                  },
+                  icon: Icons.camera_alt,
+                  isExpanded: false, // 필요하면 true
+                ),
               ),
             ),
             Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                child: ElevatedButton(onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const HomeScreen())
-                  );
-                },
-                  child: const Text("홈으로 나가기"),
-                )
-            )
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: CustomButton(
+                model: ButtonModel(
+                  text: "홈으로 나가기",
+                  textColor: Colors.white,
+                  backgroundColor: Color(0xFF9A93DA),
+                  borderRadius: 12,
+                  onPressed: () {
+                    // 홈으로 나가기
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const HomeScreen())
+                    );
+                  },
+                  icon: Icons.undo,
+                  isExpanded: false, // 필요하면 true
+                ),
+              ),
+            ),
           ],
         )
 
