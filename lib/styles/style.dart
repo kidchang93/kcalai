@@ -23,4 +23,8 @@ class AppTextStyles {
     color: Colors.black,
   );
 
+  static const redText = TextStyle(
+    fontSize: 16,
+    color: Colors.red,
+  );
 }
