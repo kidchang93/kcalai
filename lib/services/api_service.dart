@@ -42,7 +42,23 @@ class ApiService{
     }
   }
 
-  // static Future<String> predictResult() async {
-  //
-  // }
+  static Future<String> searchNutritionByFoodName(String foodName) async {
+    final uri = Uri.parse("$baseUrl/api/gpt-predict");
+    final response = await http.post(
+      uri,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        "text": "${foodName} 1인분 기준 g수와 칼로리, 영양정보를 알려줘. 형식은 칼로리:...kcal, 영양정보: 탄수화물: ..g 단백질: ..g, 지방: ..g 이 네가지만 알려줘.",
+        "max_tokens": 256,
+      })
+    );
+    final data = jsonDecode(response.body);
+    if(data['response_text'] != null){
+      return data['response_text'];
+    } else {
+      throw Exception("서버 응답 오류: ${response.statusCode}");
+    }
+  }
 }

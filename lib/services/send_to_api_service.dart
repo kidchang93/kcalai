@@ -29,4 +29,28 @@ class SendToAPIService {
       );
     }
   }
+
+  static Future<void> sendFoodNameToAPI(BuildContext context, String foodName) async {
+
+    try {
+      final nutrtion = await ApiService.searchNutritionByFoodName(foodName);
+
+      if (!context.mounted) return;
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>
+              ResultScreen(predictions: predictions),
+        ),
+      );
+    } catch (e) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString())),
+      );
+    }
+
+
+  }
 }

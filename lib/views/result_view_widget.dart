@@ -4,6 +4,7 @@ import 'package:kcalai/models/button_model.dart';
 import 'package:kcalai/home.dart';
 import 'package:kcalai/models/prediction.dart';
 import 'package:kcalai/screen/main_screen.dart';
+import 'package:kcalai/services/send_to_api_service.dart';
 import 'package:kcalai/styles/style.dart';
 
 class ResultWidget extends StatefulWidget {
@@ -56,8 +57,8 @@ class _ResultWidgetState extends State<ResultWidget> {
                           backgroundColor: Color(0xFF9A93DA),
                           borderRadius: 12,
                           onPressed: () {
-                            // 버튼 클릭 시 행동
-                            print("영양 정보 보기 버튼 클릭");
+                            // TopPrediction 의 결과 값을 기반으로 요청
+                            SendToAPIService.sendFoodNameToAPI(context, topPrediction.label);
                           },
                           icon: Icons.search,
                           isExpanded: false, // 필요하면 true
