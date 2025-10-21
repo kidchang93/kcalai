@@ -50,11 +50,11 @@ class _ResultWidgetState extends State<ResultWidget> {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 16),
-              Column(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 150,vertical: 10),
+                    padding: const EdgeInsets.symmetric(vertical: 10),
                     child: CustomButton(
                         model: ButtonModel(
                           text: "네",
