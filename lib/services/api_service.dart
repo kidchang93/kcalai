@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:kcalai/models/nutrition_model.dart';
 import 'package:kcalai/models/prediction.dart';
 import 'package:path/path.dart';
 
@@ -42,7 +43,7 @@ class ApiService{
     }
   }
 
-  static Future<String> searchNutritionByFoodName(String foodName) async {
+  static Future<NutritionModel> searchNutritionByFoodName(String foodName) async {
     final uri = Uri.parse("$baseUrl/api/gpt-predict");
     final response = await http.post(
       uri,
@@ -56,7 +57,7 @@ class ApiService{
     );
     final data = jsonDecode(response.body);
     if(data['response_text'] != null){
-      return data['response_text'];
+      return NutritionModel.fromJson(data);
     } else {
       throw Exception("서버 응답 오류: ${response.statusCode}");
     }

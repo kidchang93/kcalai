@@ -4,6 +4,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:kcalai/screen/result_screen.dart';
 import 'package:kcalai/services/api_service.dart';
+import 'package:kcalai/views/nutrition_view_widget.dart';
 
 class SendToAPIService {
   static Future<void> sendPhotoToAPI(BuildContext context, XFile imageFile ) async {
@@ -33,7 +34,7 @@ class SendToAPIService {
   static Future<void> sendFoodNameToAPI(BuildContext context, String foodName) async {
 
     try {
-      final nutrtion = await ApiService.searchNutritionByFoodName(foodName);
+      final nutrition = await ApiService.searchNutritionByFoodName(foodName);
 
       if (!context.mounted) return;
 
@@ -41,7 +42,7 @@ class SendToAPIService {
         context,
         MaterialPageRoute(
           builder: (context) =>
-              ResultScreen(predictions: predictions),
+              NutritionViewWidget(nutrition: nutrition)
         ),
       );
     } catch (e) {
