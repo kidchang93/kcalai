@@ -51,8 +51,8 @@ class ApiService{
         'Content-Type': 'application/json',
       },
       body: jsonEncode({
-        "text": "${foodName} 1인분 기준 g수와 칼로리, 영양정보를 알려줘. 형식은 칼로리:...kcal, 영양정보: 탄수화물: ..g 단백질: ..g, 지방: ..g 이 네가지만 알려줘.",
-        "max_tokens": 256,
+        "text": "${foodName}의 1인분 기준 g수와 칼로리, 영양정보를 알려줘. 형식은 ${foodName}의 1인분 기준 g수는 00g \n 칼로리:...kcal, \n영양정보: \n탄수화물: ..g\n단백질: ..g,\n지방: ..g 이 네가지만 알려줘.",
+        "max_tokens": 1024,
       })
     );
     final data = jsonDecode(response.body);

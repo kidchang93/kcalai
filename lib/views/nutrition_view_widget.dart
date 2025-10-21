@@ -10,8 +10,17 @@ class NutritionViewWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child:
-        Text(nutrition.text, style: AppTextStyles.blackText,),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: Text(
+                nutrition.text,
+                style: AppTextStyles.blackText,
+              ),
+            ),
+          ],
+        )
       ),
     );
   }
