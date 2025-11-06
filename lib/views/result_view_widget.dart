@@ -22,156 +22,365 @@ class _ResultWidgetState extends State<ResultWidget> {
   @override
   Widget build(BuildContext context) {
     final topPrediction = widget.predictions.reduce((a,b) => a.score > b.score ? a : b);
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,  // 위-중앙-아래 구조 배치
-      children: [
-        Flexible(
-          child: ListView(
-          shrinkWrap: true,  // 내부 높이만큼만 사용
-            // physics: const NeverScrollableScrollPhysics(),  // 스크롤 비활성화
-          children: widget.predictions.map((p) {
-            return ListTile(
-              title: Text(p.label, style: AppTextStyles.title,),
-              trailing: Text((p.score * 100).toStringAsFixed(2) + '%', style: AppTextStyles.title,),
-            );
-          }).toList(),
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Colors.grey[50]!,
+            Colors.white,
+          ],
         ),
-        ),
-
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 0),
-          child: Column(
-            children: [
-              Text(
-                "해당 음식은 ${(topPrediction.score * 100).toStringAsFixed(2) + '%'}로 ${topPrediction.label}(으)로 보여집니다.\n"
-                    "${topPrediction.label}의 칼로리와 영양 정보를\n"
-                    "알려 드릴까요?",
-                style: AppTextStyles.body,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    child: CustomButton(
-                        model: ButtonModel(
-                          text: "네",
-                          textColor: Colors.white,
-                          backgroundColor: Color(0xFF9A93DA),
-                          borderRadius: 12,
-                          onPressed: () {
-                            // TopPrediction 의 결과 값을 기반으로 요청
-                            SendToAPIService.sendFoodNameToAPI(context, topPrediction.label);
-                          },
-                          icon: Icons.search,
-                          isExpanded: false, // 필요하면 true
-                        ),
-                    ),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          // 상단 타이틀
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Color(0xFF4CAF50).withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Icon(
+                    Icons.analytics,
+                    color: Color(0xFF4CAF50),
+                    size: 28,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                const Text(
+                  '분석 결과',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          
+          // 예측 결과 리스트
+          Flexible(
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 20),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
                   ),
                 ],
               ),
-
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                child: Column(
-                  children: [
-                    // 원하는 음식의 이름을 직접 입력해서 검색.
-                    Text(
-                      "일치하는 음식이 없나요? 직접 입력해보세요!",
-                      style: AppTextStyles.redText,
-                    ),
-                  ],
+              child: ListView.separated(
+                shrinkWrap: true,
+                padding: const EdgeInsets.all(16),
+                itemCount: widget.predictions.length,
+                separatorBuilder: (context, index) => Divider(
+                  height: 24,
+                  color: Colors.grey[200],
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                child: Row(
-                  children: [
-                    Expanded(
-                        child: TextField(
-                          controller: _controller,
-                          decoration: InputDecoration(
-                            labelText: "음식 이름을 입력하세요.",
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
+                itemBuilder: (context, index) {
+                  final p = widget.predictions[index];
+                  final isTop = p == topPrediction;
+                  return Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: isTop ? Color(0xFF4CAF50).withOpacity(0.1) : Colors.transparent,
+                      borderRadius: BorderRadius.circular(12),
+                      border: isTop ? Border.all(
+                        color: Color(0xFF4CAF50).withOpacity(0.3),
+                        width: 2,
+                      ) : null,
+                    ),
+                    child: Row(
+                      children: [
+                        if (isTop) ...[
+                          const Icon(
+                            Icons.check_circle,
+                            color: Color(0xFF4CAF50),
+                            size: 24,
+                          ),
+                          const SizedBox(width: 12),
+                        ],
+                        Expanded(
+                          child: Text(
+                            p.label,
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: isTop ? FontWeight.bold : FontWeight.w500,
+                              color: Colors.black87,
                             ),
                           ),
-                          textInputAction: TextInputAction.done,
-                          onSubmitted: (_) => SendToAPIService.sendFoodNameToAPI(context, _controller.text.trim()),
                         ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: isTop ? Color(0xFF4CAF50) : Colors.grey[300],
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            '${(p.score * 100).toStringAsFixed(1)}%',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: isTop ? Colors.white : Colors.black54,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+
+          // 중간 영역 - 영양정보 확인
+          Container(
+            margin: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xFF4CAF50), Color(0xFF45B649)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Color(0xFF4CAF50).withOpacity(0.3),
+                  blurRadius: 15,
+                  offset: const Offset(0, 8),
+                ),
+              ],
+            ),
+            child: Column(
+              children: [
+                const Icon(
+                  Icons.restaurant_menu,
+                  color: Colors.white,
+                  size: 32,
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  "${topPrediction.label}",
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  "정확도: ${(topPrediction.score * 100).toStringAsFixed(1)}%",
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.white70,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  "칼로리와 영양 정보를 알려드릴까요?",
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.white,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    SendToAPIService.sendFoodNameToAPI(context, topPrediction.label);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: Color(0xFF4CAF50),
+                    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    elevation: 0,
+                  ),
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.search, size: 20),
+                      SizedBox(width: 8),
+                      Text(
+                        "영양 정보 보기",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // 직접 입력 섹션
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      Icons.edit,
+                      color: Colors.orange[600],
+                      size: 20,
                     ),
                     const SizedBox(width: 8),
-                    CustomButton(
-                        model: ButtonModel(
-                          text: "검색하기",
-                          textColor: Colors.white,
-                          backgroundColor: Color(0xFF9A93DA),
-                          borderRadius: 12,
-                          onPressed: () {
-                            // TopPrediction 의 결과 값을 기반으로 요청
-                            SendToAPIService.sendFoodNameToAPI(context, _controller.text.trim());
-                          },
-                          icon: Icons.search,
-                          isExpanded: false, // 필요하면 true
-                        ),
-                    )
+                    Text(
+                      "일치하는 음식이 없나요?",
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.orange[600],
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ],
                 ),
-              ),
-
-            ],
-          )
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,  // Row 내부 요소를 가운데 정렬
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: CustomButton(
-                model: ButtonModel(
-                  text: "다시 촬영",
-                  textColor: Colors.white,
-                  backgroundColor: Color(0xFF9A93DA),
-                  borderRadius: 12,
-                  onPressed: () {
-                    // 다시 촬영 화면으로 이동
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const MainScreen(),
-                        )
-                    );
-                  },
-                  icon: Icons.camera_alt,
-                  isExpanded: false, // 필요하면 true
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _controller,
+                        decoration: InputDecoration(
+                          hintText: "음식 이름을 입력하세요",
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: Colors.grey[300]!),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: Colors.grey[300]!),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: const BorderSide(color: Color(0xFF9A93DA), width: 2),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          filled: true,
+                          fillColor: Colors.grey[50],
+                        ),
+                        textInputAction: TextInputAction.done,
+                        onSubmitted: (_) => SendToAPIService.sendFoodNameToAPI(context, _controller.text.trim()),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    ElevatedButton(
+                      onPressed: () {
+                        SendToAPIService.sendFoodNameToAPI(context, _controller.text.trim());
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFF4CAF50),
+                        padding: const EdgeInsets.all(12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        elevation: 0,
+                      ),
+                      child: const Icon(Icons.search, color: Colors.white),
+                    ),
+                  ],
                 ),
-              ),
+              ],
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: CustomButton(
-                model: ButtonModel(
-                  text: "홈으로 나가기",
-                  textColor: Colors.white,
-                  backgroundColor: Color(0xFF9A93DA),
-                  borderRadius: 12,
-                  onPressed: () {
-                    // 홈으로 나가기
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const HomeScreen())
-                    );
-                  },
-                  icon: Icons.undo,
-                  isExpanded: false, // 필요하면 true
-                ),
-              ),
-            ),
-          ],
-        )
+          ),
 
-      ],
+          const SizedBox(height: 16),
+          
+          // 하단 버튼들
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const MainScreen()),
+                      );
+                    },
+                    icon: const Icon(Icons.camera_alt, size: 20),
+                    label: const Text(
+                      "다시 촬영",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFF4CAF50),
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: 0,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const HomeScreen()),
+                      );
+                    },
+                    icon: const Icon(Icons.home, size: 20),
+                    label: const Text(
+                      "홈으로",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: Color(0xFF4CAF50),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      side: const BorderSide(color: Color(0xFF4CAF50), width: 2),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
